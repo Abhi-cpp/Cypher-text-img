@@ -1,5 +1,5 @@
 import getKey from "../generateKey";
-
+import Download from "./../download";
 function cypherImage() {
 
     function encrypt() {
@@ -26,13 +26,8 @@ function cypherImage() {
                 let res = base64String.charCodeAt(i) ^ key;
                 result += String.fromCharCode(res);
             }
-            const element = document.createElement("a");
-            const file = new Blob([result], { type: 'text/plain' });
-            element.href = URL.createObjectURL(file);
-            const randomNum = Math.floor(Math.random() * 1000000);
-            // save the name of the file as oldname + .txt
-            element.download = `${image.name.split('.')[0]}.txt`;
-            element.click();
+            const name = image.name.split('.')[0] + '.txt';
+            Download(result, 'text/plain', name);
         }
     }
 
@@ -57,33 +52,31 @@ function cypherImage() {
                 let res = reader.result.charCodeAt(i) ^ key;
                 result += String.fromCharCode(res);
             }
+            try {
+                // check if decryption was sunccessful or not and thorw error.
+                const c1 = result.split(':')[0];
+                const c2 = result.split(':')[1].split(';')[1].split(',')[0];
 
-            // check if decryption was sunccessful or not and thorw error.
-            const c1 = result.split(':')[0];
-            const c2 = result.split(':')[1].split(';')[1].split(',')[0];
-            console.log(c1, c2);
-            if (c1 == "data" && c2 == "base64") {
-                // convert base64 to it's file type
-                const arr = result.split(',');
-                let u8arr;
-                let bstr;
-                let n;
-                const mime = arr[0].match(/:(.*?);/)[1];
-                bstr = atob(arr[arr.length - 1]),
-                    n = bstr.length,
-                    u8arr = new Uint8Array(n);
-                while (n--) {
-                    u8arr[n] = bstr.charCodeAt(n);
+                if (c1 == "data" && c2 == "base64") {
+                    // convert base64 to it's file type
+                    const arr = result.split(',');
+                    let u8arr;
+                    let bstr;
+                    let n;
+                    const mime = arr[0].match(/:(.*?);/)[1];
+                    bstr = atob(arr[arr.length - 1]),
+                        n = bstr.length,
+                        u8arr = new Uint8Array(n);
+                    while (n--) {
+                        u8arr[n] = bstr.charCodeAt(n);
+                    }
+                    // save this image to a file and download it
+                    Download(u8arr, mime);
                 }
-                // save this image to a file and download it
-                const element = document.createElement("a");
-                const file = new Blob([u8arr], { type: mime });
-                element.href = URL.createObjectURL(file);
-                const randomNum = Math.floor(Math.random() * 1000000);
-                element.download = `Cypher${randomNum}.${mime.split('/')[1]}`;
-                element.click();
+                else
+                    alert('Wrong password or data corrupted');
             }
-            else {
+            catch (e) {
                 alert('Wrong password or data corrupted');
             }
         }

@@ -1,5 +1,6 @@
 import "./Cypher.css"
 import getKey from "../generateKey";
+import Downlaod from "./../download";
 function Cypher() {
 
     function helper() {
@@ -28,12 +29,7 @@ function Cypher() {
             alert('No text to download');
             return;
         }
-        const element = document.createElement("a");
-        const file = new Blob([value], { type: 'text/plain' });
-        element.href = URL.createObjectURL(file);
-        const randomNum = Math.floor(Math.random() * 1000000);
-        element.download = `Cypher${randomNum}.txt`
-        element.click();
+        Downlaod(value);
     }
     return (
         <>
