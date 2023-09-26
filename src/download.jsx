@@ -1,4 +1,5 @@
-function downlaod(value, type = 'text/plain', name = 'Cypher') {
+function downlaod(value, type = 'text/txt', name = 'Cypher') {
+    console.log(type, name);
     try {
         const element = document.createElement("a");
         const file = new Blob([value], { type });

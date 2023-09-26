@@ -27,7 +27,7 @@ function cypherImage() {
                 result += String.fromCharCode(res);
             }
             const name = image.name.split('.')[0] + '.txt';
-            Download(result, 'text/plain', name);
+            Download(result, 'text/txt', name);
         }
     }
 
